@@ -14,10 +14,11 @@ class App extends Component {
         </header>
         <Switch>
           <Route exact path="/" component={ Login } />
+          <Route path="/game" />
         </Switch>
         <footer>
           Alexandre Aqui [x] Will aqui [x] joão aqui [x] Isabela aqui [x]
-          Letícia aqui [x] Bruno aqui
+          Letícia aqui [x] Bruno Ro7 aqui
         </footer>
       </div>
     );

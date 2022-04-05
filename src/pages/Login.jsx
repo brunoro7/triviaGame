@@ -1,4 +1,8 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { sendToken } from '../actions';
 
 class Login extends Component {
   constructor() {
@@ -40,6 +44,15 @@ class Login extends Component {
     // }
   };
 
+  fetchToken = async () => {
+    const { tokenDispatch } = this.props;
+    const urlEndPointToken = 'https://opentdb.com/api_token.php?command=request';
+    const callFetchToken = await fetch(urlEndPointToken);
+    const dataToken = await callFetchToken.json();
+
+    tokenDispatch(dataToken.token);
+  }
+
   render() {
     const { isDisable, name, email } = this.state;
     return (
@@ -66,13 +79,27 @@ class Login extends Component {
             onChange={ (event) => this.changeInput(event) }
           />
         </label>
-
-        <button type="button" data-testid="btn-play" disabled={ isDisable }>
-          Play
-        </button>
+        <Link to="/game">
+          <button
+            type="button"
+            data-testid="btn-play"
+            disabled={ isDisable }
+            onClick={ () => this.fetchToken() }
+          >
+            Play
+          </button>
+        </Link>
       </>
     );
   }
 }
 
-export default Login;
+const mapDispatchToProps = (dispatch) => ({
+  tokenDispatch: (token) => dispatch(sendToken(token)),
+});
+
+Login.propTypes = {
+  tokenDispatch: PropTypes.func.isRequired,
+};
+
+export default connect(null, mapDispatchToProps)(Login);
