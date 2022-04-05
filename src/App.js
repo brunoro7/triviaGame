@@ -7,9 +7,7 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <img src={ logo } className="App-logo" alt="logo" />
-        <p>
-          Alexandre Aqui
-        </p>
+        <p>Alexandre Aqui [x] Will aqui joão aqui</p>
       </header>
     </div>
   );
