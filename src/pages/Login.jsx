@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { sendToken } from '../actions';
+import { sendPerfil, sendToken } from '../actions';
 
 class Login extends Component {
   constructor() {
@@ -55,6 +55,7 @@ class Login extends Component {
 
   render() {
     const { isDisable, name, email } = this.state;
+    const { sendingPerfil } = this.props;
     return (
       <>
         <label htmlFor="name">
@@ -84,7 +85,10 @@ class Login extends Component {
             type="button"
             data-testid="btn-play"
             disabled={ isDisable }
-            onClick={ () => this.fetchToken() }
+            onClick={ () => {
+              this.fetchToken();
+              sendingPerfil({ name, email });
+            } }
           >
             Play
           </button>
@@ -105,9 +109,11 @@ class Login extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
   tokenDispatch: (token) => dispatch(sendToken(token)),
+  sendingPerfil: (perfil) => dispatch(sendPerfil(perfil)),
 });
 
 Login.propTypes = {
+  sendingPerfil: PropTypes.func.isRequired,
   tokenDispatch: PropTypes.func.isRequired,
 };
 
