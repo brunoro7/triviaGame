@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Login from './pages/Login';
 import Config from './pages/Config';
 import Game from './pages/Game';
+import Ranking from './pages/Ranking';
 // import logo from './trivia.png';
 import './styles/App.css';
 
@@ -14,6 +15,7 @@ class App extends Component {
 
     return (
       <div className="App">
+
         {/* <header className="App-header">
           <img src={ logo } className="App-logo" alt="logo" />
         </header> */}
@@ -23,6 +25,7 @@ class App extends Component {
           </Route>
           <Route path="/game" component={ Game } />
           <Route exact path="/config" component={ Config } />
+          <Route exact path="/ranking" component={ Ranking } />
         </Switch>
         {/* <footer>
           Alexandre Aqui [x] Will aqui [x] joão aqui [x] Isabela aqui [x]
