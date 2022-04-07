@@ -48,7 +48,7 @@ class Game extends React.Component {
         incorrect_answers: incorrectAnswers = [],
       } = question;
 
-      const numIncorrectAnswers = incorrect_answers.length;
+      const numIncorrectAnswers = incorrectAnswers.length;
       const randomIndex = Math.floor(Math.random() * (numIncorrectAnswers));
 
       const answers = [...incorrectAnswers].map((answer, index) => (
