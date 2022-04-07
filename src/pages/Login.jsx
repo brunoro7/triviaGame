@@ -33,16 +33,6 @@ class Login extends Component {
     this.setState({
       isDisable: !(emailTrue && nameTrue),
     });
-
-    // if (emailTrue && nameTrue) {
-    //   this.setState({
-    //     isDisable: false,
-    //   });
-    // } else {
-    //   this.setState({
-    //     isDisable: true,
-    //   });
-    // }
   };
 
   fetchToken = async () => {
@@ -82,24 +72,21 @@ class Login extends Component {
             onChange={ (event) => this.changeInput(event) }
           />
         </label>
-        <Link to="/game">
-          <button
-            type="button"
-            data-testid="btn-play"
-            disabled={ isDisable }
-            onClick={ () => {
-              this.fetchToken();
-              sendingPerfil({ name, email });
-            } }
-          >
-            Play
-          </button>
-        </Link>
+        <button
+          type="button"
+          data-testid="btn-play"
+          disabled={ isDisable }
+          onClick={ () => {
+            this.fetchToken();
+            sendingPerfil({ name, email });
+          } }
+        >
+          Play
+        </button>
         <Link to="/config">
           <button
             type="button"
             data-testid="btn-settings"
-            // onClick={ }
           >
             Configuração
           </button>

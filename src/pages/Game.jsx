@@ -38,17 +38,20 @@ class Game extends React.Component {
         incorrect_answers: incorrectAnswers = [],
       } = question;
 
-      const numIncorrectAnswers = incorrectAnswers.length;
-      const randomIndex = Math.floor(Math.random() * (numIncorrectAnswers));
-
       const answers = [...incorrectAnswers].map((answer, index) => (
         { text: answer, dataTestId: `wrong-answer-${index}` }
       ));
+      answers.push({ text: correctAnswer, dataTestId: 'correct-answer' });
 
-      const aux = answers.at(randomIndex);
-      answers[randomIndex] = { text: correctAnswer, dataTestId: 'correct-answer' };
-      answers.push(aux);
-      console.log(answers);
+      // função baseada na idéia do site: https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
+      for (let index = answers.length - 1; index > 0; index -= 1) {
+        // Escolhendo elemento aleatório
+        const randomNumToIndex = Math.floor(Math.random() * (index + 1));
+        // Reposicionando elemento
+        [answers[index],
+          answers[randomNumToIndex]] = [answers[randomNumToIndex], answers[index]];
+      }
+
       this.setState({ answers });
     }
   }
@@ -57,6 +60,7 @@ class Game extends React.Component {
     const { name, getScore, questions } = this.props;
     const { imgSource, indexQuestion, answers } = this.state;
 
+    console.log(answers);
     const conditional = questions.length !== 0;
     const question = questions[indexQuestion];
     return (
