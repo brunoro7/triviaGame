@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
+import '../styles/Game.css';
 
 class Game extends React.Component {
   constructor() {
@@ -39,9 +40,19 @@ class Game extends React.Component {
       } = question;
 
       const answers = [...incorrectAnswers].map((answer, index) => (
-        { text: answer, dataTestId: `wrong-answer-${index}` }
+        {
+          text: answer,
+          dataTestId: `wrong-answer-${index}`,
+          type: 'incorrect',
+          className: '',
+        }
       ));
-      answers.push({ text: correctAnswer, dataTestId: 'correct-answer' });
+      answers.push({
+        text: correctAnswer,
+        dataTestId: 'correct-answer',
+        type: 'correct',
+        className: '',
+      });
 
       // função baseada na idéia do site: https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
       for (let index = answers.length - 1; index > 0; index -= 1) {
@@ -54,6 +65,18 @@ class Game extends React.Component {
 
       this.setState({ answers });
     }
+  }
+
+  handleClick = () => {
+    const { answers } = this.state;
+    const answers1 = answers.map((answer) => {
+      if (answer.type === 'correct') {
+        return { ...answer, className: 'correct' };
+      }
+      return { ...answer, className: 'incorrect' };
+    });
+
+    this.setState({ answers: answers1 });
   }
 
   render() {
@@ -99,7 +122,6 @@ class Game extends React.Component {
                   {question.question}
                 </h3>
 
-                {/* ainda falta ser aleatorio  */}
                 <section data-testid="answer-options">
                   {
                     answers.map((answer, index) => (
@@ -107,6 +129,8 @@ class Game extends React.Component {
                         type="button"
                         key={ index }
                         data-testid={ answer.dataTestId }
+                        className={ answer.className }
+                        onClick={ () => this.handleClick() }
                       >
                         {answer.text}
                       </button>

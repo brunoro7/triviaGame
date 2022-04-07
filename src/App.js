@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Config from './pages/Config';
 import Game from './pages/Game';
 // import logo from './trivia.png';
-import './App.css';
+import './styles/App.css';
 
 class App extends Component {
   render() {
