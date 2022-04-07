@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { sendPerfil, sendToken } from '../actions';
+import fetchTriviaApi from '../services/fetchTriviaApi';
 
 class Login extends Component {
   constructor() {
@@ -45,12 +46,13 @@ class Login extends Component {
   };
 
   fetchToken = async () => {
-    const { tokenDispatch } = this.props;
+    const { tokenDispatch, sendRequestApi } = this.props;
     const urlEndPointToken = 'https://opentdb.com/api_token.php?command=request';
     const callFetchToken = await fetch(urlEndPointToken);
     const dataToken = await callFetchToken.json();
 
     tokenDispatch(dataToken.token);
+    sendRequestApi(dataToken.token);
   }
 
   render() {
@@ -110,11 +112,13 @@ class Login extends Component {
 const mapDispatchToProps = (dispatch) => ({
   tokenDispatch: (token) => dispatch(sendToken(token)),
   sendingPerfil: (perfil) => dispatch(sendPerfil(perfil)),
+  sendRequestApi: (token) => dispatch(fetchTriviaApi(token)),
 });
 
 Login.propTypes = {
   sendingPerfil: PropTypes.func.isRequired,
   tokenDispatch: PropTypes.func.isRequired,
+  sendRequestApi: PropTypes.func.isRequired,
 };
 
 export default connect(null, mapDispatchToProps)(Login);

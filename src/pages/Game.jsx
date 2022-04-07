@@ -8,7 +8,6 @@ class Game extends React.Component {
     super();
     this.state = {
       imgSource: '',
-      questions: [],
       indexQuestion: 0,
       answers: [],
     };
@@ -16,30 +15,21 @@ class Game extends React.Component {
 
   async componentDidMount() {
     const { emailGravatar } = this.props;
+
     const hash = md5(emailGravatar).toString();
 
     const urlGravatar = `https://www.gravatar.com/avatar/${hash}`;
 
-    this.triviaRequest();
     this.setState({
       imgSource: urlGravatar,
     });
-  }
 
-  triviaRequest = async () => {
-    const { tokenTrivia } = this.props;
-    const urlTrivia = `https://opentdb.com/api.php?amount=5&token=${tokenTrivia}`;
-    const fetchTrivia = await fetch(urlTrivia);
-    const apiResult = await fetchTrivia.json();
-
-    this.setState({
-      questions: apiResult.results,
-    });
     this.randomAnswers();
   }
 
   randomAnswers = () => {
-    const { questions, indexQuestion } = this.state;
+    const { indexQuestion } = this.state;
+    const { questions } = this.props;
     const question = questions[indexQuestion];
 
     if (questions.length > 0) {
@@ -64,12 +54,11 @@ class Game extends React.Component {
   }
 
   render() {
-    const { name, getScore } = this.props;
-    const { imgSource, questions, indexQuestion, answers } = this.state;
+    const { name, getScore, questions } = this.props;
+    const { imgSource, indexQuestion, answers } = this.state;
 
     const conditional = questions.length !== 0;
     const question = questions[indexQuestion];
-
     return (
       <div>
         <header>
@@ -133,7 +122,7 @@ Game.propTypes = {
   emailGravatar: PropTypes.string.isRequired,
   getScore: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  tokenTrivia: PropTypes.string.isRequired,
+  questions: PropTypes.arrayOf(PropTypes.any).isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -142,6 +131,7 @@ const mapStateToProps = (state) => ({
   assertions: state.player.assertions,
   getScore: state.player.score,
   tokenTrivia: state.token,
+  questions: state.triviaApi.questions,
 });
 
 export default connect(mapStateToProps)(Game);
