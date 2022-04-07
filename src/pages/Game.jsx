@@ -10,7 +10,7 @@ class Game extends React.Component {
       imgSource: '',
       questions: [],
       indexQuestion: 0,
-      newArray: [],
+      answers: [],
     };
   }
 
@@ -21,7 +21,6 @@ class Game extends React.Component {
     const urlGravatar = `https://www.gravatar.com/avatar/${hash}`;
 
     this.triviaRequest();
-
     this.setState({
       imgSource: urlGravatar,
     });
@@ -36,26 +35,38 @@ class Game extends React.Component {
     this.setState({
       questions: apiResult.results,
     });
+    this.randomAnswers();
   }
-
-  randomNumber = () => {
-    const { questions } = this.state;
+  
+  randomAnswers = () => {
+    const { questions,indexQuestion } = this.state;
     const question = questions[indexQuestion];
-
-    const NUMBER_4 = 4;
-    let randoms = [];
-    for (let i = 0; i < question.incorrect_answers.length + 1; i += 1) {
-      randoms.push(Math.floor(Math.random() * (NUMBER_4)));
+    
+    if(questions.length > 0){
+      const {correct_answer,incorrect_answers = []} = question
+       
+      const numIncorrectAnswers = incorrect_answers.length
+      const randomIndex = Math.floor(Math.random() * (numIncorrectAnswers))
+      
+      const answers = [...incorrect_answers].map((answer,index)=> (
+        { 'text': answer, 'dataTestId': `wrong-answer-${index}` }
+      ))
+        
+      const aux =  answers.at(randomIndex)
+      answers[randomIndex] = { 'text': correct_answer, 'dataTestId': 'correct-answer' }
+      answers.push(aux)
+      console.log(answers);
+      this.setState({answers})
     }
   }
 
   render() {
     const { name, getScore } = this.props;
-    const { imgSource, questions, indexQuestion } = this.state;
+    const { imgSource, questions, indexQuestion , answers} = this.state;
 
     const conditional = questions.length !== 0;
     const question = questions[indexQuestion];
-
+    
     return (
       <div>
         <header>
@@ -94,22 +105,17 @@ class Game extends React.Component {
 
                 {/* ainda falta ser aleatorio  */}
                 <section data-testid="answer-options">
-                  <button
-                    type="button"
-                    data-testid="correct-answer"
-                  >
-                    {question.correct_answer}
-                  </button>
                   {
-                    question.incorrect_answers.map((wrongAnswer, index) => (
-                      <button
-                        type="button"
-                        key={ index }
-                        data-testid={ `wrong-answer-${index}` }
-                      >
-                        {wrongAnswer}
-                      </button>
-                    ))
+                    answers.map((answer,index) => (
+                        <button 
+                          type='button'
+                          key={ index }
+                          data-testid={answer.dataTestId}
+                        >
+                        {answer.text}
+                        </button>
+                      )
+                    )
                   }
                 </section>
               </div>
