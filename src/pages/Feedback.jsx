@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 class Feedback extends React.Component {
   componentDidMount() {
@@ -11,7 +12,7 @@ class Feedback extends React.Component {
     const { imgSrc, name, score } = this.props;
     const obj = [{
       name,
-      score,
+      score: score === '' ? 0 : score,
       picture: imgSrc,
     }];
     localStorage.setItem('ranking', JSON.stringify(obj));
@@ -22,8 +23,9 @@ class Feedback extends React.Component {
     const lessThanThree = 'Could be better...';
     const threeOrMore = 'Well Done!';
     const min = 3;
+    const less = 0;
     const condition = assertions < min ? lessThanThree : threeOrMore;
-    const condition2 = assertions === '' ? 0 : assertions;
+    const condition2 = assertions === '' ? parseFloat(less) : assertions;
 
     return (
       <div>
@@ -37,6 +39,16 @@ class Feedback extends React.Component {
           <h3 data-testid="feedback-total-score">{score}</h3>
           <h3 data-testid="feedback-total-question">{condition2}</h3>
         </main>
+        <Link to="/">
+          <button data-testid="btn-play-again" type="button">
+            Play Again
+          </button>
+        </Link>
+        <Link to="/ranking">
+          <button data-testid="btn-ranking" type="button">
+            Ranking
+          </button>
+        </Link>
       </div>
     );
   }
