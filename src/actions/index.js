@@ -5,6 +5,8 @@ export const REQUEST_API = 'REQUEST_API';
 export const RECEIVE_API = 'RECEIVE_API';
 
 export const SEND_SCORE = 'SEND_SCORE';
+export const SEND_ASSERTION = 'SEND_ASSERTION';
+export const SEND_PLAYER_IMG = 'SEND_PLAYER_IMG';
 
 export const sendToken = (token) => ({
   type: SEND_TOKEN,
@@ -28,4 +30,14 @@ export const receiveApi = (apiResult) => ({
 export const sendScore = (score) => ({
   type: SEND_SCORE,
   score,
+});
+
+export const sendAssertion = (assertion) => ({
+  type: SEND_ASSERTION,
+  assertion,
+});
+
+export const sendPlayerImg = (imgSource) => ({
+  type: SEND_PLAYER_IMG,
+  imgSource,
 });

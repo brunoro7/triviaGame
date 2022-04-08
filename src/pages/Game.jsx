@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import '../styles/Game.css';
-import { sendScore } from '../actions';
+import { sendAssertion, sendPlayerImg, sendScore } from '../actions';
 
 const ONE_SECOND = 1000;
 const TIRTY_SECONDS = 30000;
@@ -15,6 +15,7 @@ class Game extends React.Component {
     this.state = {
       imgSource: '',
       indexQuestion: 0,
+      numberOne: 1,
       howManyTimesWasClicked: 0,
       answers: [],
       counter: 30,
@@ -25,12 +26,12 @@ class Game extends React.Component {
   }
 
   async componentDidMount() {
-    const { emailGravatar } = this.props;
+    const { emailGravatar, dispatchPlayerImg } = this.props;
     const hash = md5(emailGravatar).toString();
     const urlGravatar = `https://www.gravatar.com/avatar/${hash}`;
     this.setState({
       imgSource: urlGravatar,
-    });
+    }, () => dispatchPlayerImg(urlGravatar));
     this.randomAnswers(); this.makeCounter(); this.disabledAnswers();
   }
 
@@ -89,7 +90,7 @@ class Game extends React.Component {
   }
 
   checkTypeAndSum = (param) => {
-    const { questions, dispatchScore } = this.props;
+    const { questions, dispatchScore, dispatchAssertion } = this.props;
     const { indexQuestion, counter } = this.state;
     const baseScore = 10;
     const question = questions[indexQuestion];
@@ -98,8 +99,9 @@ class Game extends React.Component {
     if (param.id === 'correct') {
       this.setState({ localScore: formula },
         () => {
-          const { localScore } = this.state;
+          const { localScore, numberOne } = this.state;
           dispatchScore(localScore);
+          dispatchAssertion(numberOne);
         });
     } else {
       this.setState({ localScore: 0 },
@@ -171,7 +173,6 @@ class Game extends React.Component {
           </p>
           <span>{ counter }</span>
         </header>
-
         <main>
           {
             conditional
@@ -217,22 +218,21 @@ class Game extends React.Component {
           >
             Next
           </button>
-
         </main>
       </div>
     );
   }
 }
-
 Game.propTypes = {
   emailGravatar: PropTypes.string.isRequired,
   getScore: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   questions: PropTypes.arrayOf(PropTypes.any).isRequired,
   dispatchScore: PropTypes.func.isRequired,
+  dispatchAssertion: PropTypes.func.isRequired,
+  dispatchPlayerImg: PropTypes.func.isRequired,
   history: PropTypes.objectOf(PropTypes.any).isRequired,
 };
-
 const mapStateToProps = (state) => ({
   name: state.player.name,
   emailGravatar: state.player.gravatarEmail,
@@ -241,9 +241,9 @@ const mapStateToProps = (state) => ({
   tokenTrivia: state.token,
   questions: state.triviaApi.questions,
 });
-
 const mapDispatchToProps = (dispatch) => ({
   dispatchScore: (param) => dispatch(sendScore(param)),
+  dispatchAssertion: (assert) => dispatch(sendAssertion(assert)),
+  dispatchPlayerImg: (imgsrc) => dispatch(sendPlayerImg(imgsrc)),
 });
-
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
