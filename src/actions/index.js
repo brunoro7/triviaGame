@@ -36,8 +36,3 @@ export const sendAssertion = (assertion) => ({
   type: SEND_ASSERTION,
   assertion,
 });
-
-export const sendPlayerImg = (imgSource) => ({
-  type: SEND_PLAYER_IMG,
-  imgSource,
-});

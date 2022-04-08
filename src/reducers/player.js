@@ -1,8 +1,8 @@
-import { SEND_PERFIL, SEND_SCORE, SEND_ASSERTION, SEND_PLAYER_IMG } from '../actions';
+import { SEND_PERFIL, SEND_SCORE, SEND_ASSERTION } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
-  assertions: '',
+  assertions: 0,
   score: 0,
   gravatarEmail: '',
   playerImgSrc: '',
@@ -15,6 +15,7 @@ const player = (state = INITIAL_STATE, action) => {
       ...state,
       name: action.perfil.name,
       gravatarEmail: action.perfil.email,
+      playerImageSrc: action.perfil.playerImgSrc,
     };
   case SEND_SCORE:
     return {
@@ -25,11 +26,6 @@ const player = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       assertions: Number(state.assertions) + action.assertion,
-    };
-  case SEND_PLAYER_IMG:
-    return {
-      ...state,
-      playerImgSrc: action.imgSource,
     };
   default:
     return state;

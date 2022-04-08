@@ -23,7 +23,6 @@ class Feedback extends React.Component {
     const threeOrMore = 'Well Done!';
     const min = 3;
     const condition = assertions < min ? lessThanThree : threeOrMore;
-    const condition2 = assertions === '' ? 0 : assertions;
 
     return (
       <div>
@@ -35,7 +34,7 @@ class Feedback extends React.Component {
         </header>
         <main>
           <h3 data-testid="feedback-total-score">{score}</h3>
-          <h3 data-testid="feedback-total-question">{condition2}</h3>
+          <h3 data-testid="feedback-total-question">{assertions}</h3>
         </main>
       </div>
     );
@@ -53,7 +52,7 @@ Feedback.propTypes = {
   name: PropTypes.string.isRequired,
   imgSrc: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
-  assertions: PropTypes.number.isRequired,
+  assertions: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps)(Feedback);
