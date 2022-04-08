@@ -2,10 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { resetGame } from '../actions';
 
 class Feedback extends React.Component {
   componentDidMount() {
+    const { dispatchReset } = this.props;
     this.mountLocalStorage();
+    dispatchReset();
   }
 
   mountLocalStorage = () => {
@@ -61,11 +64,16 @@ const mapStateToProps = (state) => ({
   assertions: state.player.assertions,
 });
 
+const mapDispatchToProps = (dispatch) => ({
+  dispatchReset: () => dispatch(resetGame()),
+});
+
 Feedback.propTypes = {
   name: PropTypes.string.isRequired,
   imgSrc: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
   assertions: PropTypes.number.isRequired,
+  dispatchReset: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps)(Feedback);
+export default connect(mapStateToProps, mapDispatchToProps)(Feedback);
