@@ -15,6 +15,7 @@ class Game extends React.Component {
     this.state = {
       imgSource: '',
       indexQuestion: 0,
+      howManyTimesWasClicked: 0,
       answers: [],
       counter: 30,
       localScore: 0,
@@ -25,18 +26,12 @@ class Game extends React.Component {
 
   async componentDidMount() {
     const { emailGravatar } = this.props;
-
     const hash = md5(emailGravatar).toString();
-
     const urlGravatar = `https://www.gravatar.com/avatar/${hash}`;
-
     this.setState({
       imgSource: urlGravatar,
     });
-
-    this.randomAnswers();
-    this.makeCounter();
-    this.disabledAnswers();
+    this.randomAnswers(); this.makeCounter(); this.disabledAnswers();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -71,34 +66,25 @@ class Game extends React.Component {
         className: '',
         id: 'correct',
       });
-
       // função baseada na idéia do site: https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
       for (let index = answers.length - 1; index > 0; index -= 1) {
-        // Escolhendo elemento aleatório
         const randomNumToIndex = Math.floor(Math.random() * (index + 1));
-        // Reposicionando elemento
         [answers[index],
           answers[randomNumToIndex]] = [answers[randomNumToIndex], answers[index]];
       }
-
       this.setState({ answers });
     }
   }
 
   disabledAnswers = () => {
     setTimeout(() => {
-      this.setState({
-        disabledAnswer: true,
-        nextClass: 'nextClassHidden',
-      });
+      this.setState({ disabledAnswer: true, nextClass: 'nextClassHidden' });
     }, TIRTY_SECONDS);
   }
 
   makeCounter = () => {
     this.timerID = setInterval(() => {
-      this.setState((prevState) => ({
-        counter: prevState.counter - 1,
-      }));
+      this.setState((prevState) => ({ counter: prevState.counter - 1 }));
     }, ONE_SECOND);
   }
 
@@ -108,7 +94,6 @@ class Game extends React.Component {
     const baseScore = 10;
     const question = questions[indexQuestion];
     const formula = baseScore + (counter * difficulty[question.difficulty]);
-    console.log(param.id);
 
     if (param.id === 'correct') {
       this.setState({ localScore: formula },
@@ -134,21 +119,34 @@ class Game extends React.Component {
       return { ...answer, className: 'incorrect' };
     });
 
-    this.setState({ answers: answers1 });
+    this.setState({ answers: answers1, disabledAnswer: true });
     clearInterval(this.timerID);
     this.checkTypeAndSum(target);
     this.setState({ nextClass: '' });
   }
 
+  handleNext = () => {
+    const { howManyTimesWasClicked } = this.state;
+    const { history } = this.props;
+    const maxQuestions = 3;
+
+    this.setState((prevState) => ({
+      indexQuestion: prevState.indexQuestion + 1,
+      howManyTimesWasClicked: prevState.howManyTimesWasClicked + 1,
+      counter: 30,
+      nextClass: 'nextBtnHidden',
+      disabledAnswer: false,
+    }), () => {
+      this.randomAnswers();
+    });
+    if (howManyTimesWasClicked > maxQuestions) {
+      history.push('/feedback');
+    }
+  }
+
   render() {
     const { name, getScore, questions } = this.props;
-    const {
-      imgSource,
-      indexQuestion,
-      answers,
-      disabledAnswer,
-      counter,
-      nextClass,
+    const { imgSource, indexQuestion, answers, disabledAnswer, counter, nextClass,
     } = this.state;
 
     const conditional = questions.length !== 0;
@@ -215,6 +213,7 @@ class Game extends React.Component {
             className={ nextClass }
             type="button"
             data-testid="btn-next"
+            onClick={ () => this.handleNext() }
           >
             Next
           </button>
@@ -231,6 +230,7 @@ Game.propTypes = {
   name: PropTypes.string.isRequired,
   questions: PropTypes.arrayOf(PropTypes.any).isRequired,
   dispatchScore: PropTypes.func.isRequired,
+  history: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 const mapStateToProps = (state) => ({
