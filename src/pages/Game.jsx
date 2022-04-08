@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import '../styles/Game.css';
 
+const ONE_SECOND = 1000;
+const TIRTY_SECONDS = 30000;
+
 class Game extends React.Component {
   constructor() {
     super();
@@ -11,6 +14,8 @@ class Game extends React.Component {
       imgSource: '',
       indexQuestion: 0,
       answers: [],
+      counter: 30,
+      disabledAnswer: false,
     };
   }
 
@@ -26,6 +31,14 @@ class Game extends React.Component {
     });
 
     this.randomAnswers();
+    this.makeCounter();
+    this.disabledAnswers();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.counter === 0) {
+      clearInterval(this.timerID);
+    }
   }
 
   randomAnswers = () => {
@@ -67,6 +80,22 @@ class Game extends React.Component {
     }
   }
 
+  disabledAnswers = () => {
+    setTimeout(() => {
+      this.setState({
+        disabledAnswer: true,
+      });
+    }, TIRTY_SECONDS);
+  }
+
+  makeCounter = () => {
+    this.timerID = setInterval(() => {
+      this.setState((prevState) => ({
+        counter: prevState.counter - 1,
+      }));
+    }, ONE_SECOND);
+  }
+
   handleClick = () => {
     const { answers } = this.state;
     const answers1 = answers.map((answer) => {
@@ -81,7 +110,13 @@ class Game extends React.Component {
 
   render() {
     const { name, getScore, questions } = this.props;
-    const { imgSource, indexQuestion, answers } = this.state;
+    const {
+      imgSource,
+      indexQuestion,
+      answers,
+      disabledAnswer,
+      counter,
+    } = this.state;
 
     console.log(answers);
     const conditional = questions.length !== 0;
@@ -104,6 +139,7 @@ class Game extends React.Component {
           >
             { getScore }
           </p>
+          <span>{ counter }</span>
         </header>
 
         <main>
@@ -131,6 +167,7 @@ class Game extends React.Component {
                         data-testid={ answer.dataTestId }
                         className={ answer.className }
                         onClick={ () => this.handleClick() }
+                        disabled={ disabledAnswer }
                       >
                         {answer.text}
                       </button>
