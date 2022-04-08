@@ -3,9 +3,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import '../styles/Game.css';
+import { sendScore } from '../actions';
 
 const ONE_SECOND = 1000;
 const TIRTY_SECONDS = 30000;
+const difficulty = {
+  easy: 1,
+  medium: 2,
+  hard: 3,
+};
 
 class Game extends React.Component {
   constructor() {
@@ -15,6 +21,7 @@ class Game extends React.Component {
       indexQuestion: 0,
       answers: [],
       counter: 30,
+      localScore: 0,
       disabledAnswer: false,
     };
   }
@@ -65,6 +72,7 @@ class Game extends React.Component {
         dataTestId: 'correct-answer',
         type: 'correct',
         className: '',
+        id: 'correct',
       });
 
       // função baseada na idéia do site: https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
@@ -96,7 +104,30 @@ class Game extends React.Component {
     }, ONE_SECOND);
   }
 
-  handleClick = () => {
+  checkTypeAndSum = (param) => {
+    const { questions, dispatchScore } = this.props;
+    const { indexQuestion, counter } = this.state;
+    const baseScore = 10;
+    const question = questions[indexQuestion];
+    const formula = baseScore + (counter * difficulty[question.difficulty]);
+    console.log(param.id);
+
+    if (param.id === 'correct') {
+      this.setState({ localScore: formula },
+        () => {
+          const { localScore } = this.state;
+          dispatchScore(localScore);
+        });
+    } else {
+      this.setState({ localScore: 0 },
+        () => {
+          const { localScore } = this.state;
+          dispatchScore(localScore);
+        });
+    }
+  }
+
+  handleClick = ({ target }) => {
     const { answers } = this.state;
     const answers1 = answers.map((answer) => {
       if (answer.type === 'correct') {
@@ -106,6 +137,8 @@ class Game extends React.Component {
     });
 
     this.setState({ answers: answers1 });
+    clearInterval(this.timerID);
+    this.checkTypeAndSum(target);
   }
 
   render() {
@@ -118,7 +151,6 @@ class Game extends React.Component {
       counter,
     } = this.state;
 
-    console.log(answers);
     const conditional = questions.length !== 0;
     const question = questions[indexQuestion];
     return (
@@ -163,10 +195,11 @@ class Game extends React.Component {
                     answers.map((answer, index) => (
                       <button
                         type="button"
+                        id={ answer.id }
                         key={ index }
                         data-testid={ answer.dataTestId }
                         className={ answer.className }
-                        onClick={ () => this.handleClick() }
+                        onClick={ ({ target }) => this.handleClick({ target }) }
                         disabled={ disabledAnswer }
                       >
                         {answer.text}
@@ -188,6 +221,7 @@ Game.propTypes = {
   getScore: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   questions: PropTypes.arrayOf(PropTypes.any).isRequired,
+  dispatchScore: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -199,4 +233,8 @@ const mapStateToProps = (state) => ({
   questions: state.triviaApi.questions,
 });
 
-export default connect(mapStateToProps)(Game);
+const mapDispatchToProps = (dispatch) => ({
+  dispatchScore: (param) => dispatch(sendScore(param)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Game);

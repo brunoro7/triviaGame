@@ -1,4 +1,4 @@
-import { SEND_PERFIL } from '../actions';
+import { SEND_PERFIL, SEND_SCORE } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -14,6 +14,11 @@ const player = (state = INITIAL_STATE, action) => {
       ...state,
       name: action.perfil.name,
       gravatarEmail: action.perfil.email,
+    };
+  case SEND_SCORE:
+    return {
+      ...state,
+      score: state.score + action.score,
     };
   default:
     return state;

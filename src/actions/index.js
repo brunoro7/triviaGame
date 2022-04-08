@@ -4,6 +4,8 @@ export const SEND_PERFIL = 'SEND_PERFIL';
 export const REQUEST_API = 'REQUEST_API';
 export const RECEIVE_API = 'RECEIVE_API';
 
+export const SEND_SCORE = 'SEND_SCORE';
+
 export const sendToken = (token) => ({
   type: SEND_TOKEN,
   token,
@@ -21,4 +23,9 @@ export const requestApi = () => ({
 export const receiveApi = (apiResult) => ({
   type: RECEIVE_API,
   apiResult,
+});
+
+export const sendScore = (score) => ({
+  type: SEND_SCORE,
+  score,
 });
