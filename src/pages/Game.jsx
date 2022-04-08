@@ -7,11 +7,7 @@ import { sendScore } from '../actions';
 
 const ONE_SECOND = 1000;
 const TIRTY_SECONDS = 30000;
-const difficulty = {
-  easy: 1,
-  medium: 2,
-  hard: 3,
-};
+const difficulty = { easy: 1, medium: 2, hard: 3 };
 
 class Game extends React.Component {
   constructor() {
@@ -23,6 +19,7 @@ class Game extends React.Component {
       counter: 30,
       localScore: 0,
       disabledAnswer: false,
+      nextClass: 'nextBtnHidden',
     };
   }
 
@@ -92,6 +89,7 @@ class Game extends React.Component {
     setTimeout(() => {
       this.setState({
         disabledAnswer: true,
+        nextClass: 'nextClassHidden',
       });
     }, TIRTY_SECONDS);
   }
@@ -139,6 +137,7 @@ class Game extends React.Component {
     this.setState({ answers: answers1 });
     clearInterval(this.timerID);
     this.checkTypeAndSum(target);
+    this.setState({ nextClass: '' });
   }
 
   render() {
@@ -149,6 +148,7 @@ class Game extends React.Component {
       answers,
       disabledAnswer,
       counter,
+      nextClass,
     } = this.state;
 
     const conditional = questions.length !== 0;
@@ -207,9 +207,18 @@ class Game extends React.Component {
                     ))
                   }
                 </section>
+
               </div>
             )
           }
+          <button
+            className={ nextClass }
+            type="button"
+            data-testid="btn-next"
+          >
+            Next
+          </button>
+
         </main>
       </div>
     );
