@@ -94,11 +94,6 @@ class Login extends Component {
             Configuração
           </button>
         </Link>
-        <Link to="/ranking">
-          <button data-testid="btn-ranking" type="button">
-            Ranking
-          </button>
-        </Link>
       </>
     );
   }

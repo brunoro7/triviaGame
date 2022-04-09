@@ -15,7 +15,7 @@ const player = (state = INITIAL_STATE, action) => {
       ...state,
       name: action.perfil.name,
       gravatarEmail: action.perfil.email,
-      playerImageSrc: action.perfil.playerImgSrc,
+      playerImgSrc: action.perfil.playerImgSrc,
     };
   case SEND_SCORE:
     return {

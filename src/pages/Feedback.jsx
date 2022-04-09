@@ -1,17 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { resetGame } from '../actions';
 
 class Feedback extends React.Component {
   componentDidMount() {
+    const { dispatchReset } = this.props;
     this.mountLocalStorage();
+    dispatchReset();
   }
 
   mountLocalStorage = () => {
     const { imgSrc, name, score } = this.props;
     const obj = [{
       name,
-      score,
+      score: score === '' ? 0 : score,
       picture: imgSrc,
     }];
     localStorage.setItem('ranking', JSON.stringify(obj));
@@ -36,6 +40,16 @@ class Feedback extends React.Component {
           <h3 data-testid="feedback-total-score">{score}</h3>
           <h3 data-testid="feedback-total-question">{assertions}</h3>
         </main>
+        <Link to="/">
+          <button data-testid="btn-play-again" type="button">
+            Play Again
+          </button>
+        </Link>
+        <Link to="/ranking">
+          <button data-testid="btn-ranking" type="button">
+            Ranking
+          </button>
+        </Link>
       </div>
     );
   }
@@ -48,11 +62,16 @@ const mapStateToProps = (state) => ({
   assertions: state.player.assertions,
 });
 
+const mapDispatchToProps = (dispatch) => ({
+  dispatchReset: () => dispatch(resetGame()),
+});
+
 Feedback.propTypes = {
   name: PropTypes.string.isRequired,
   imgSrc: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
-  assertions: PropTypes.string.isRequired,
+  assertions: PropTypes.number.isRequired,
+  dispatchReset: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps)(Feedback);
+export default connect(mapStateToProps, mapDispatchToProps)(Feedback);

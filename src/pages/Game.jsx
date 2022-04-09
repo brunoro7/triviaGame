@@ -12,7 +12,6 @@ class Game extends React.Component {
   constructor() {
     super();
     this.state = {
-      imgSource: '',
       indexQuestion: 0,
       numberOne: 1,
       howManyTimesWasClicked: 0,
@@ -25,9 +24,6 @@ class Game extends React.Component {
   }
 
   async componentDidMount() {
-    const { playerImgSrc } = this.props;
-
-    this.setState({ imgSource: playerImgSrc });
     this.randomAnswers(); this.makeCounter(); this.disabledAnswers();
   }
 
@@ -143,10 +139,11 @@ class Game extends React.Component {
   }
 
   render() {
-    const { name, getScore, questions } = this.props;
-    const { imgSource, indexQuestion, answers, disabledAnswer, counter, nextClass,
+    const { name, getScore, questions, playerImgSrc } = this.props;
+    const { indexQuestion, answers, disabledAnswer, counter, nextClass,
     } = this.state;
 
+    console.log(playerImgSrc);
     const conditional = questions.length !== 0;
     const question = questions[indexQuestion];
     return (
@@ -154,7 +151,7 @@ class Game extends React.Component {
         <header>
           <img
             data-testid="header-profile-picture"
-            src={ imgSource }
+            src={ conditional && playerImgSrc }
             alt={ name }
           />
           <p
