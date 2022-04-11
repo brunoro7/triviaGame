@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import md5 from 'crypto-js/md5';
 import { sendPerfil, sendToken } from '../actions';
 import fetchTriviaApi from '../services/fetchTriviaApi';
 
@@ -78,7 +79,9 @@ class Login extends Component {
           disabled={ isDisable }
           onClick={ () => {
             this.fetchToken();
-            sendingPerfil({ name, email });
+            const hash = md5(email).toString();
+            const playerImgSrc = `https://www.gravatar.com/avatar/${hash}`;
+            sendingPerfil({ name, email, playerImgSrc });
           } }
         >
           Play
@@ -89,11 +92,6 @@ class Login extends Component {
             data-testid="btn-settings"
           >
             Configuração
-          </button>
-        </Link>
-        <Link to="/ranking">
-          <button data-testid="btn-ranking" type="button">
-            Ranking
           </button>
         </Link>
       </>

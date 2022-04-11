@@ -1,4 +1,4 @@
-import { RECEIVE_API, REQUEST_API } from '../actions';
+import { RECEIVE_API, REQUEST_API, RESET_GAME } from '../actions';
 
 const INITIAL_STATE = {
   questions: [],
@@ -15,6 +15,11 @@ const triviaApi = (state = INITIAL_STATE, action) => {
       ...state,
       questions: action.apiResult.results,
       isFetched: true,
+    };
+  case RESET_GAME:
+    return {
+      ...state,
+      isFetched: false,
     };
 
   default:

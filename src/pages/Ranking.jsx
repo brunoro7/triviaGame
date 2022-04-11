@@ -8,7 +8,7 @@ class Ranking extends React.Component {
         <h1 data-testid="ranking-title">Ranking</h1>
         <Link to="/">
           <button data-testid="btn-go-home" type="button">
-            Home
+            Home.
           </button>
         </Link>
       </div>

@@ -8,6 +8,7 @@ import Game from './pages/Game';
 import Ranking from './pages/Ranking';
 // import logo from './trivia.png';
 import './styles/App.css';
+import Feedback from './pages/Feedback';
 
 class App extends Component {
   render() {
@@ -26,6 +27,7 @@ class App extends Component {
           <Route path="/game" component={ Game } />
           <Route exact path="/config" component={ Config } />
           <Route exact path="/ranking" component={ Ranking } />
+          <Route exact path="/feedback" component={ Feedback } />
         </Switch>
         {/* <footer>
           Alexandre Aqui [x] Will aqui [x] joão aqui [x] Isabela aqui [x]
